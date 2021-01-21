@@ -1,0 +1,9 @@
+Django
+djangorestframework
+markdown
+django-filter
+mysqlclient
+django-environ
+django-cors-headers
+pyexcel_xls
+pyexcel_xlsx
