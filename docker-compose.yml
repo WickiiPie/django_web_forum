@@ -1,18 +1,37 @@
 version: "3.9"
-   
+
 services:
   db:
-    image: postgres
+    image: mysql:latest
+    command: mysqld --default-authentication-plugin=mysql_native_password
+    volumes:
+      - "./db-data:/var/lib/mysql"
+    ports:
+      - "3306:3306"
+    restart: always
     environment:
-      - POSTGRES_DB=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+       MYSQL_DATABASE: 'crm'
+       MYSQL_USER: 'root'
+       MYSQL_ROOT_PASSWORD: 'root'
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping --password=root"]
+      interval: 1s
+      timeout: 5s
+      retries: 15
   web:
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
+    command: bash -c "python manage.py makemigrations
+        && python manage.py migrate
+        && python manage.py runserver 0.0.0.0:8080
+      "
+    environment:
+      - PYTHONPATH=/app/server/
     volumes:
-      - .:/code
+      - .:/app
     ports:
-      - "8000:8000"
-    depends_on:
+      - "8080:8080"
+    links:
       - db
+    depends_on:
+      db:
+        condition: service_healthy
