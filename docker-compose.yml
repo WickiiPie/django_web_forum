@@ -23,6 +23,7 @@ services:
     command: bash -c "python manage.py makemigrations
         && python manage.py migrate
         && python manage.py runserver 0.0.0.0:8080
+        && alias pman="python manage.py"
       "
     environment:
       - PYTHONPATH=/app/server/
