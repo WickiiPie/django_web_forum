@@ -17,9 +17,18 @@ from django.contrib import admin
 from django.urls import path
 
 
-from forum.views import home_view
+from forum.views import (
+    home_view,
+    forum_list_view,
+    sub_forum_list_view
+)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home_view, name='home'),
+
+    #forum
+    path('forum/', forum_list_view, name='forum_list_view'),
+
+    path('forum/<int:pk>/', sub_forum_list_view, name='sub_forum_list_view'),
 ]
