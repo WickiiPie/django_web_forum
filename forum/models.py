@@ -43,3 +43,6 @@ class post(models.Model):
 
     def get_absolute_url(self):
         return reverse("forum:thread_details_view", kwargs={"id":self.id})
+
+    # def __str__(self):
+    #     return '{}-{}'.format(self.thread.title, str(self.user.username))
