@@ -12,6 +12,7 @@ from .models import(
 from .forms import ThreadCreateForm
 
 from django.db.models import Q
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 # Create your views here.
 def forum_list_view(request):
@@ -36,11 +37,35 @@ def sub_forum_list_view(request, id):
 
     return render(request, "forum/sub_forum_list.html", context)
 
-# def thread_search_view(request):
-#     query = request.GET.get('q')
-#     if query:
-#         object_list = thread.object
-#         'object_list'
+def thread_search_view(request):
+    query = request.GET.get('q')
+
+    if query:
+        object_list = thread.objects.filter(
+            Q(title__icontains=query)
+        )
+    else:
+        # object_list = thread.objects.all().order_by('-id') # incase no meta class in model
+        object_list = thread.objects.all()
+
+    search_paginator = Paginator(object_list, 5)
+    page = request.GET.get('page')
+
+    try:
+        object_list = search_paginator.page(page)
+    except PageNotAnInteger:
+        object_list = search_paginator.page(1)
+    except EmptyPage:
+        object_list = search_paginator.page(search_paginator.num_pages)
+
+
+    context = {
+        'object_list': object_list
+    }
+
+    return render(request, "forum/thread_search.html", context)
+
+
 def thread_list_view(request, id):
 
     try:
@@ -48,20 +73,20 @@ def thread_list_view(request, id):
     except thread.DoesNotExist:
         raise Http404
 
-    query = request.GET.get('q')
-    if query:
-        queryset = thread.objects.filter(
-            Q(title__icontains=query)
-            # |
-            # Q(user_id__exact=query)|
-            # Q(sub_forum_id=query)
-            )
+    # query = request.GET.get('q')
+    # if query:
+    #     queryset = thread.objects.filter(
+    #         Q(title__icontains=query)
+    #         # |
+    #         # Q(user_id__exact=query)|
+    #         # Q(sub_forum_id=query)
+    #         )
 
     sub_forum_id = id
     context = {
         'object_list': queryset,
         'get_sub_forum_id' : sub_forum_id,
-    }
+}
     print(context)
 
     return render(request, "forum/thread_list.html", context)

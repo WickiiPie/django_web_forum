@@ -48,6 +48,12 @@ class thread(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     sub_forum_id = models.ForeignKey('forum.sub_forum', on_delete=models.CASCADE, null=True)
 
+
+    class Meta:
+        ordering = ['-created_at']
+    def __str__(self):
+        return self.title
+
 class post(models.Model):
     id = models.AutoField(primary_key=True)
     thread_id = models.ForeignKey('forum.thread', on_delete=models.CASCADE, null=True)

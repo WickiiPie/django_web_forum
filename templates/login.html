@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1> user login</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form }}
+        <br>
+
+        <small>
+            <a href="{% url 'user_register_view' %}">Register new account</a>
+        </small>
+
+        <small>
+            <a href="{% url 'reset_password' %}">Forgotten password</a>
+        </small>
+    </br>
+        <input type="submit" value="login" class="btn btn-outline-success">
+
+    </form>
+{% endblock %}

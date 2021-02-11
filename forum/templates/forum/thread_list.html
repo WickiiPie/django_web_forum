@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1> Thread show all, belonging to Subforum id {{get_sub_forum_id}}</h1>
+</h1>
+{{ object_list}}
+<small> {{i.sub_forum_id}}</small>
+
+{% for i in object_list %}
+
+<p>{{ i.id }} | <a href="{% url 'forum:thread_detail_view' id=i.id %}">{{ i.title}} </a> |
+    {{ i.created_at}} </p>
+
+        {% empty %}
+        <div class="container-fluid">
+            <h3> No post found having searched query q = "{{ request.GET.q }}" </h3>
+        </div>
+{% endfor %}
+
+{% if request.user.is_authenticated %}
+<p><a href="{% url 'forum:thread_create_view' sub_forum_id=get_sub_forum_id %}">Create new thread</a> </p>
+{% endif %}
+{% endblock %}
+
