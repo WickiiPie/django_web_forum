@@ -10,6 +10,9 @@ from .models import(
 )
 
 from .forms import ThreadCreateForm
+
+from django.db.models import Q
+
 # Create your views here.
 def forum_list_view(request):
 
@@ -33,12 +36,26 @@ def sub_forum_list_view(request, id):
 
     return render(request, "forum/sub_forum_list.html", context)
 
+# def thread_search_view(request):
+#     query = request.GET.get('q')
+#     if query:
+#         object_list = thread.object
+#         'object_list'
 def thread_list_view(request, id):
 
     try:
         queryset = thread.objects.filter(sub_forum_id=id)
     except thread.DoesNotExist:
         raise Http404
+
+    query = request.GET.get('q')
+    if query:
+        queryset = thread.objects.filter(
+            Q(title__icontains=query)
+            # |
+            # Q(user_id__exact=query)|
+            # Q(sub_forum_id=query)
+            )
 
     sub_forum_id = id
     context = {
