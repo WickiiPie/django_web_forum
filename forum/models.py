@@ -15,6 +15,9 @@ class forum(models.Model):
         return reverse("forum:sub_forum_list_view", args=[str(self.id)])
         # return reverse("forum:forum_list_view")
 
+    def __str__(self):
+        return self.name
+
 class sub_forum(models.Model):
 
     id = models.AutoField(primary_key=True)
@@ -46,3 +49,12 @@ class post(models.Model):
 
     # def __str__(self):
     #     return '{}-{}'.format(self.thread.title, str(self.user.username))
+
+class user_profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE) # one to one with auth user
+    dob = models.DateField(null=True, blank = True)
+    # photo = models.ImageField(null=True, blank=True) # requires pip install pillow
+    address = models.CharField(max_length=100 )
+
+    def __str__(self):
+        return "Profile of user {}".format(self.user.username)

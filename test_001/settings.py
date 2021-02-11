@@ -138,3 +138,9 @@ EMAIL_PORT = 587 # TLS port gmail
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'wichapol.p@cartrust.co.th'
 EMAIL_HOST_PASSWORD = ' ' #acual password
+
+
+
+#for photos
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
