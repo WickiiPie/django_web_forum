@@ -1,10 +1,14 @@
 from django.shortcuts import render, HttpResponseRedirect, HttpResponse, redirect
 
 from django.contrib.auth import authenticate, login, logout
-
+from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 
-from .forms import UserLoginForm, UserRegistrationForm
+from .forms import UserLoginForm, UserRegistrationForm, UserEditForm, ProfileEditForm
+
+from forum.models import user_profile
+
+
 
 def home_view(request):
 
@@ -73,6 +77,9 @@ def user_register_view(request):
             #set password for new user
             new_user.set_password(form.cleaned_data['password'])
             new_user.save()
+            # link to user_profile model
+            user_profile.objects.create(user=new_user)
+
             return redirect('forum:forum_list_view')
     else:
         form = UserRegistrationForm()
@@ -81,3 +88,25 @@ def user_register_view(request):
     }
 
     return render(request, 'register.html', context)
+
+#decorator
+@login_required
+def edit_profile_view(request):
+    if request.method == 'POST':
+        user_form = UserEditForm(data=request.POST or None, instance=request.user)
+        profile_form = ProfileEditForm(data=request.POST or None, instance=request.user.profile, files=request.FILES)
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+
+            return redirect('forum:forum_list_view')
+    else:
+        user_form = UserEditForm(instance=request.user)
+        profile_form = ProfileEditForm(instance=request.user.profile)
+
+    context = {
+        'user_form' : user_form,
+        'profile_form' : profile_form,
+    }
+
+    return render(request, 'forum/edit_profile.html', context)

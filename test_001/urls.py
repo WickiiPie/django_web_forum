@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-from .views import home_view, user_login_view, user_logout_view, user_register_view
+from .views import home_view, user_login_view, user_logout_view, user_register_view, edit_profile_view
 
 from django.contrib.auth import views as auth_views
 
@@ -31,6 +31,8 @@ urlpatterns = [
     path('logout/', user_logout_view, name='user_logout_view'),
     path('register/', user_register_view, name='user_register_view'),
     path('forum/', include('forum.urls')),
+
+    path('edit_profile/', edit_profile_view, name='edit_profile_view'),
 
     # TODO password reset names and routing are fixed
     path('reset_password/', auth_views.PasswordResetView.as_view() , name='reset_password'),

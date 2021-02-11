@@ -51,7 +51,7 @@ class post(models.Model):
     #     return '{}-{}'.format(self.thread.title, str(self.user.username))
 
 class user_profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE) # one to one with auth user
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile') # one to one with auth user
     dob = models.DateField(null=True, blank = True)
     # photo = models.ImageField(null=True, blank=True) # requires pip install pillow
     address = models.CharField(max_length=100 )

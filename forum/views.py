@@ -6,6 +6,7 @@ from .models import(
     sub_forum,
     thread,
     post,
+    user_profile,
 )
 
 from .forms import ThreadCreateForm
