@@ -28,7 +28,19 @@ class sub_forum(models.Model):
     def get_absolute_url(self):
         return reverse("forum:thread_list_view", args=[str(self.id)])
 
+
+class ThreadManager(models.Manager):
+    def get_queryset(self):
+        return super(ThreadManager, self).get_queryset().filter(sub_forum_id=1)
+
 class thread(models.Model):
+
+    objects = models.Manager() # default manager
+
+    # published = models.Manager()     # for using custom ORM, use published instead of objects #example thread.published.all()
+
+    published = ThreadManager()     # using subclass to use specific manager
+
     id = models.AutoField(primary_key=True)
     user_id = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     title = models.CharField(max_length=100, null=False, unique=True)

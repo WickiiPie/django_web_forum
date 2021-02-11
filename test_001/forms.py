@@ -30,6 +30,9 @@ class UserRegistrationForm(forms.ModelForm):
 
 
 class UserEditForm(forms.ModelForm):
+    username = forms.CharField(widget=forms.TextInput(attrs={'readonly':'readonly'}))
+    email = forms.CharField(widget=forms.TextInput(attrs={'readonly':'readonly'}))
+
     class Meta:
         model = User
         fields = (
