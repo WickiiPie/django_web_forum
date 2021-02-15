@@ -1,5 +1,5 @@
 from django.shortcuts import render, reverse
-from django.shortcuts import Http404, HttpResponseRedirect, HttpResponse
+from django.shortcuts import Http404, HttpResponseRedirect, HttpResponse, get_object_or_404
 
 from .models import(
     forum,
@@ -9,7 +9,7 @@ from .models import(
     user_profile,
 )
 
-from .forms import ThreadCreateForm
+from .forms import ThreadCreateForm, ThreadEditForm
 
 from django.db.models import Q
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -48,7 +48,7 @@ def thread_search_view(request):
         # object_list = thread.objects.all().order_by('-id') # incase no meta class in model
         object_list = thread.objects.all()
 
-    search_paginator = Paginator(object_list, 5)
+    search_paginator = Paginator(object_list, 5)    # max page 5
     page = request.GET.get('page')
 
     try:
@@ -58,13 +58,34 @@ def thread_search_view(request):
     except EmptyPage:
         object_list = search_paginator.page(search_paginator.num_pages)
 
+# proper pagination tutorial 34
+    # if page is None:
+    #     start_index = 0 # page min
+    #     end_index = 2 # page max
+    # else:
+    #     (start_index, end_index) = proper_pagination(object_list, index=1)
+
+
+    # page_range = list(search_paginator.page_range)[start_index:end_index]
+
 
     context = {
-        'object_list': object_list
+        'object_list': object_list,
+        # 'page_range' : page_range,
     }
 
     return render(request, "forum/thread_search.html", context)
 
+# proper pagination tutorial 34
+# def proper_pagination(search, index):
+#     start_index = 0
+#     end_index = 7
+
+#     if search.number > index:
+#         start_index = search.number - index
+#         end_index = start_index + end_index
+
+#     return (start_index, end_index)
 
 def thread_list_view(request, id):
 
@@ -141,3 +162,43 @@ def thread_create_view(request, sub_forum_id):
         'form':form
     }
     return render(request, "forum/thread_create.html", context)
+
+def thread_edit_view(request, id):
+
+    obj = get_object_or_404(thread, id=id)
+
+    # if logged in user is not the same as the user creating the thread
+    if obj.user_id != request.user:
+        raise Http404()
+
+    x = obj.sub_forum_id.id
+
+    print("this is ", x)
+    if request.method == 'POST':
+        form = ThreadEditForm(request.POST or None, instance=obj)
+        if form.is_valid():
+            form.save()
+
+            print(form)
+            # return HttpResponseRedirect(reverse('forum:thread_detail_view') )
+            return HttpResponseRedirect('/forum/%d/details'%x) #ok
+    else:
+        form = ThreadEditForm(instance=obj)
+
+    context = {
+        'form': form,
+        'thread': obj,
+    }
+    return render(request, 'forum/thread_edit.html', context)
+
+
+def thread_delete_view(request, id):
+    obj = get_object_or_404(thread, id=id)
+    if obj.user_id != request.user:
+        raise Http404()
+
+    sub_forum_id = obj.sub_forum_id.id
+
+    obj.delete()
+    print("Thread id", id," + is deleted")
+    return HttpResponseRedirect('/forum/%d/thread'%sub_forum_id) #ok

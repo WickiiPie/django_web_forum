@@ -11,7 +11,8 @@ from forum.views import (
     # post_create,
     thread_create_view,
     thread_search_view,
-
+    thread_edit_view,
+    thread_delete_view,
 )
 
 app_name = 'forum'
@@ -27,4 +28,7 @@ urlpatterns = [
     path('<int:id>/details/', thread_detail_view, name='thread_detail_view'),
     path('<int:sub_forum_id>/thread/create/', thread_create_view, name='thread_create_view'),
     path('thread/search/', thread_search_view, name='thread_search_view'),
+
+    path('<int:id>/details/edit', thread_edit_view, name='thread_edit_view'),
+    path('<int:id>/details/delete', thread_delete_view, name='thread_delete_view'),
 ]

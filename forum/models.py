@@ -46,6 +46,7 @@ class thread(models.Model):
     title = models.CharField(max_length=100, null=False, unique=True)
     content = models.CharField(max_length=100, null=False, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     sub_forum_id = models.ForeignKey('forum.sub_forum', on_delete=models.CASCADE, null=True)
 
 
@@ -60,6 +61,7 @@ class post(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     parent_id = models.ForeignKey('forum.post', on_delete=models.CASCADE, null=True, blank=True)
 
     def get_absolute_url(self):

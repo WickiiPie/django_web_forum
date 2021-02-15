@@ -2,32 +2,49 @@
 
 {% block content %}
 <h1> Thead Detail</h1>
-<h1> Thread name {{ object_list.name }} </h1>
+<h1> Thread name
+{% for i in object_list %}
+    {{ i.title }}
+{% endfor %}
+</h1>
+
+
+{% if request.user.is_authenticated %}
+<div class='section-1'>
+
+    {% for i in object_list %}
+        <a href="{% url 'forum:thread_edit_view' id=i.id %}"> {{ i.id}}
+        <button type="button" value='Edit' class="btn btn-outline-success">Edit</button>
+        </a>
+        <a href="{% url 'forum:thread_delete_view' id=i.id %}">
+            <button type="button" value='Delete' class="btn btn-outline-success" id='deletebutton'>Delete</button>
+        </a>
+    {% endfor %}
+
+</div>
+{% endif %}
+
+<br>
 
 {% for instance in object_list %}
 <p>
-    <h2>{{instance.id }}</h2>
-    {{instance.user_id }}
-    {{ instance.title }}
-    {{instance.title }}
-    {{instance.content }}
-    {{instance.created_at }}
+    <h3> All details of thread</h3>
+    {{instance.user_id }} |
+    {{ instance.title }} |
+    {{instance.content }} |
+    {{instance.created_at }} |
     {{instance.sub_forum_id }}
 </p>
 {% endfor %}
+
 <h1> posts</h1>
 {% for instance in post %}
 <p>
     <h3>{{instance.content }} </h3>
     <p>{{instance.user_id }} : {{instance.parent_id }}</p>
     <p>{{instance.thread_id }} : {{instance.created_at }} </p>
-
 </p>
-
 {% endfor %}
-
-
-
 
 
 
