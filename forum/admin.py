@@ -10,7 +10,7 @@ class UserProfileAdmin(admin.ModelAdmin):
 class ThreadAdmin(admin.ModelAdmin):
 
     search_fields = ('title', 'created_at')
-    list_display = ('title', 'user_id', 'sub_forum_id')
+    list_display = ('title', 'user_id', 'sub_forum_id', 'updated_at')
 
 admin.site.register(forum)
 admin.site.register(sub_forum)

@@ -1,9 +1,6 @@
 <!DOCTYPE html>
 <html>
 
-
-
-
 <head>
     <title> Django web forum</title>
 
@@ -15,6 +12,7 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <h1> Django Forum </h1>
@@ -27,8 +25,8 @@
 
     </nav>
 </body>
-<body>
 
+<body>
     {% block content %}
     Home page
     {% endblock %}
@@ -37,14 +35,12 @@
 </html>
 
 <script type="text/javascript">
-
-
-
-    $(document).ready(function(event) {
-        $('#deletebutton').click(function(){
-        return confirm("U wanna delete?")
+    $(document).ready(function (event) {
+        $('#deletebutton').click(function () {
+            return confirm("U wanna delete?")
         });
+        setTimeout(function () {
+            $('.alert').slideUp(2000);
+        }, 5000); // 5000ms
     });
-
 </script>
-

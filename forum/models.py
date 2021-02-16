@@ -62,19 +62,23 @@ class post(models.Model):
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    parent_id = models.ForeignKey('forum.post', on_delete=models.CASCADE, null=True, blank=True)
+    parent_id = models.ForeignKey('forum.post', on_delete=models.CASCADE, null=True, blank=True, related_name="parent")
+
+    class Meta:
+        ordering = ['created_at']
 
     def get_absolute_url(self):
         return reverse("forum:thread_details_view", kwargs={"id":self.id})
 
     # def __str__(self):
-    #     return '{}-{}'.format(self.thread.title, str(self.user.username))
+    #     return '{}-{}'.format(self.thread_id.title, str(self.user_id.username))
 
 class user_profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile') # one to one with auth user
     dob = models.DateField(null=True, blank = True)
     # photo = models.ImageField(null=True, blank=True) # requires pip install pillow
     address = models.CharField(max_length=100 )
+
 
     def __str__(self):
         return "Profile of user {}".format(self.user.username)
