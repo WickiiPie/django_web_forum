@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1> post reply</h1>
+
+{% for i in object_list %}
+        <p> {{i.content}} | {{i.user_id}} | {{i.thread_id}} | {{i.created_at}} | {{i.updated_at}} </p>
+{% endfor %}
+<form method='POST' >
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type='submit' value='Create' class="btn btn-outline-success"/>
+</form>
+{% endblock %}

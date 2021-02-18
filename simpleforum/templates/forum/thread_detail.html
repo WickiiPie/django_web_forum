@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% include 'forum/thread_alert.html' %}
+
+
+{% if request.user.is_authenticated %}
+{% endif %}
+
+<br>
+
+{% for instance in object_list %}
+    <h1 style="font-weight: bold">"{{ instance.title }}"
+    {% if request.user == instance.user_id %}
+    <a href="{% url 'simpleforum:thread_edit_view' id=instance.id %}">
+        <button type="button" value='Edit' class="btn btn-outline-success" id='editbutton'>Edit</button>
+    </a>
+    <a href="{% url 'simpleforum:thread_delete_view' id=instance.id %}">
+        <button type="button" value='Delete' class="btn btn-outline-success" id='deletebutton'>Delete</button>
+    </a>
+    {% endif %}</h1>
+    <p>
+    All details of thread
+    {{ instance.user_id }} |
+    {{ instance.content }} |
+    {{ instance.created_at }} |
+    {{ instance.sub_forum_id }}
+    </p>
+{% endfor %}
+
+<h1> Posts</h1>
+{% if post.count == 0 %}
+No post yet
+{% else %}
+{{ post.count }} Post/Comment {{ post|pluralize }}
+
+<div class="main-comment-section" </div> <div class="container-fluid mt-2">
+    {% for instance in post %}
+    <div class="form-group row">
+        <p>
+            {% if instance.parent_id == None %}
+            <blockquote class="blockquote">
+                <p class="mb-0">Comment #{{ instance.id }} to thread #{{ instance.thread_id.id }} </p>
+                <p>{{ instance.content }} :{{ instance.user_id|capfirst }} </p>
+                <p>{{ instance.thread_id }} : {{ instance.created_at }} : {{ instance.parent_id }} </p>
+                <footer class="blockquote-footer"> <cite title="source title">{{ instance.user_id|capfirst }}</cite>
+                        {% if request.user.is_authenticated %}
+                        <a
+                            href="{% url 'simpleforum:post_reply_view' thread_id=instance.thread_id.id parent_id=instance.id %}">
+                            {{ instance.id }}
+                            <button type="button" value='Reply' class="btn btn-outline-success">Reply</button>
+                        </a>
+                        {% endif %}
+                </footer>
+            </blockquote>
+            {% endif %}
+    </div>
+    <div class="replied-comments container mt-2">
+        <div class="form-group row">
+            {% for replies in instance.parent.all %}
+            <blockquote class="blockquote">
+                <p class="mb-0">Reply #{{ replies.id }} to #{{ replies.parent_id.id }} </p>
+                <p>{{ replies.content }} :{{ replies.user_id|capfirst }} </p>
+                <p>{{ replies.thread_id }} : {{ replies.created_at }} </p>
+                <footer class="blockquote-footer"> <cite title="source title"> {{ replies.user_id|capfirst }}</cite>
+                        {% if request.user.is_authenticated %}
+                        <a
+                            href="{% url 'simpleforum:post_reply_view' thread_id=instance.thread_id.id parent_id=replies.id %}">
+                            {{ replies.id }}
+                            <button type="button" value='Reply' class="btn btn-outline-success">Reply</button>
+                        </a>
+                        {% endif %}
+                </footer>
+            </blockquote>
+            {% endfor %}
+        </div>
+    </div>
+    </p>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% if request.user.is_authenticated %}
+<h2>Add New comment </h2>
+<form method='POST' >
+    {% csrf_token %}
+    {{ post_comment.as_p }}
+    <input type='submit' value='Add New Comment' class="btn btn-outline-success" />
+</form>
+{% else %}
+<p> Please login before adding a new comment</p>
+{% endif %}
+
+{% endblock %}

@@ -14,8 +14,31 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+
+from .views import home_view, user_login_view, user_logout_view, user_register_view, edit_profile_view
+
+from django.contrib.auth import views as auth_views
+
+from django.conf import settings
+
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', home_view, name='home_view'),
+    path('login/', user_login_view, name='user_login_view'),
+    path('logout/', user_logout_view, name='user_logout_view'),
+    path('register/', user_register_view, name='user_register_view'),
+    path('forum/', include('simpleforum.urls')),
+
+    path('edit_profile/', edit_profile_view, name='edit_profile_view'),
+
+    # TODO password reset names and routing are fixed
+    path('reset_password/', auth_views.PasswordResetView.as_view() , name='reset_password'),
+    # path('reset_password_sent/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done' ),
+    # path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm' ),
+    # path('reset_password_complete/', auth_views.PasswordResetCompleteView.as_view() , name='password_reset_complete' ),
+
+
 ]

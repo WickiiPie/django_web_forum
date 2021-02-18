@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% if messages %}
+    {% for message in messages %}
+    <p class="alert alert-{{ message.tags }}"> {{ message }}</p>
+    {% endfor %}
+{% endif %}
+<h1> Thread show all, belonging to Subforum id {{ get_sub_forum_id }}</h1>
+</h1>
+<small> {{ i.SubForum_id }}</small>
+
+{% for i in object_list %}
+
+<p>{{ i.id }} | <a href="{% url 'simpleforum:thread_detail_view' id=i.id %}">{{ i.title }} </a> |
+    {{ i.created_at }} </p>
+        {% empty %}
+        <div class="container-fluid">
+            <h3> No Thread Exists </h3>
+        </div>
+{% endfor %}
+
+{% if request.user.is_authenticated %}
+<p><a href="{% url 'simpleforum:thread_create_view' sub_forum_id=get_sub_forum_id %}">Create new thread</a> </p>
+{% endif %}
+{% endblock %}
+

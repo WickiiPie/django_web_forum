@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title> Django web forum</title>
+
+</head>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <h1> Django Forum </h1>
+        <div class="container-fluid">
+            <form class="search-container" action="{% url 'simpleforum:thread_search_view' %} ">
+                <input class="form-control me-2" type="search" placeholder="Search for a thread title"
+                    aria-label="Search" name='q'>
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+        </div>
+
+        <a class="navbar-brand" href="{% url 'simpleforum:forum_list_view' %}">Forum</a>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'user_logout_view' %}">Logout</a>
+                </li>
+                <br>
+                <p> Welcome {{ request.user.username }} </p>
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'user_login_view' %}">Login/Register</a>
+                </li>
+                {% endif %}
+
+        </div>
+    </nav>
+</body>
+
+<body>
+    {% block content %}
+    Home page
+    {% endblock %}
+</body>
+
+</html>
+
+<script type="text/javascript">
+    $(document).ready(function (event) {
+        $('#deletebutton').click(function () {
+            return confirm("U wanna delete?")
+        });
+        setTimeout(function () {
+            $('.alert').slideUp(2000);
+        }, 5000); // 5000ms
+    });
+</script>

@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1> thread edit</h1>
+{% block title %} {{ thread.title }}| Edit {% endblock %}
+<form method='POST'>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type='submit' value='Update' class="btn btn-success"/>
+</form>
+{% endblock %}

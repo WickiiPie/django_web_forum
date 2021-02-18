@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1> Forum List all</h1>
+{% if request.user.is_authenticated %}
+<span> Welcome  {{ request.user.username }}</span>
+{% endif %}
+
+<H2> ID - Name - Description </H2>
+{% for i in object_list %}
+<p>{{ i.pk }} | <a href="{% url 'simpleforum:sub_forum_list_view' id=i.pk %}"> {{ i.name }} </a> | {{ i.description }}</p>
+
+{% endfor %}
+{% endblock %}
