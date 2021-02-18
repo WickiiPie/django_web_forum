@@ -2,12 +2,9 @@
 
 {% block content %}
 <h1> Sub Forum List all</h1>
-<p> this is object list {{ object_list}} </p>
-
-<H2>{{ name }}</H2>
-<H2> ID - Name - Description </H2>
+<h2>{{ object_list.sub_forum_id.id }}</h2>
+<h2> ID - Name - Description </h2>
 {% for i in object_list %}
-<p>{{ i.id }} | <a href="{% url 'simpleforum:thread_list_view' id=i.id %}"> {{ i.name }} </a> | {{ i.description }}</p>
-
+<p>{{ i.id }} | <a href="{% url 'simpleforum:thread_list_view' slug=i.slug %}"> {{ i.name }} </a> | {{ i.description }}</p>
 {% endfor %}
 {% endblock %}

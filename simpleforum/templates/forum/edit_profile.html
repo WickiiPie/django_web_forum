@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %} Edit Profile | {{block.super}} {% endblock %}
+{% block title %} Edit Profile | {{ block.super }} {% endblock %}
 {% block content %}
 
 <h1> User edit profile </h1>
@@ -9,8 +9,6 @@
         {{ user_form.as_p }}
         {{ profile_form.as_p }}
         <br>
-    </br>
         <input type="submit" value="Save changes" class="btn btn-outline-success">
-
     </form>
 {% endblock %}

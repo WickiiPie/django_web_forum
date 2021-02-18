@@ -75,16 +75,16 @@ def user_register_view(request):
 # decorator
 @login_required
 def edit_profile_view(request):
-    if request.method == 'POST':
+    if request.method == 'POST' and request.user.profile !=None:
         user_form = UserEditForm(data=request.POST or None,
                                  instance=request.user)
         profile_form = ProfileEditForm(data=request.POST or None,
                                        instance=request.user.profile,
                                        files=request.FILES)
         if user_form.is_valid() and profile_form.is_valid():
+        # if user_form.is_valid():
             user_form.save()
             profile_form.save()
-
             return redirect('simpleforum:forum_list_view')
     else:
         user_form = UserEditForm(instance=request.user)

@@ -18,13 +18,13 @@ app_name = 'simpleforum'
 
 urlpatterns = [
     # forum
-    path('', forum_list_view, name='forum_list_view'),
-    path('<int:id>/', sub_forum_list_view, name='sub_forum_list_view'),
-    path('<int:id>/thread/', thread_list_view, name='thread_list_view'),
-    path('<int:id>/details/', thread_detail_view, name='thread_detail_view'),
-    path('<int:sub_forum_id>/thread/create/', thread_create_view, name='thread_create_view'),
-    path('thread/search/', thread_search_view, name='thread_search_view'),
-    path('<int:id>/details/edit', thread_edit_view, name='thread_edit_view'),
-    path('<int:id>/details/delete', thread_delete_view, name='thread_delete_view'),
-    path('reply/<int:thread_id>/<int:parent_id>', post_reply_view, name='post_reply_view'),
+    path('', forum_list_view, name='forum_list_view'), #
+    path('<int:id>/', sub_forum_list_view, name='sub_forum_list_view'), #
+    path('<slug:slug>/thread/', thread_list_view, name='thread_list_view'), #
+    path('node/<int:id>/', thread_detail_view, name='thread_detail_view'), #
+    path('node/add/forum/<int:sub_forum_id>/', thread_create_view, name='thread_create_view'),
+    path('node/search/', thread_search_view, name='thread_search_view'),
+    path('node/<int:id>/edit/', thread_edit_view, name='thread_edit_view'),
+    path('node/<int:id>/delete/', thread_delete_view, name='thread_delete_view'),
+    path('node/<int:thread_id>/<int:parent_id>', post_reply_view, name='post_reply_view'),
 ]

@@ -1,5 +1,10 @@
 from django.shortcuts import render, reverse
-from django.shortcuts import Http404, HttpResponseRedirect, HttpResponse, get_object_or_404
+from django.shortcuts import (
+    Http404,
+    HttpResponseRedirect,
+    HttpResponse,
+    get_object_or_404
+)
 
 from .models import(
     Forum,
@@ -10,15 +15,12 @@ from .models import(
 )
 
 from .forms import ThreadCreateForm, ThreadEditForm, PostCreateForm
-
 from django.db.models import Q
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-
 from django.contrib import messages
 
 # Create your views here.
 def forum_list_view(request):
-
     queryset = Forum.objects.all()
     context = {
         'object_list': queryset
@@ -27,7 +29,6 @@ def forum_list_view(request):
 
 
 def sub_forum_list_view(request, id):
-
     try:
         queryset = SubForum.objects.filter(forum_id=id)
     except SubForum.DoesNotExist:
@@ -62,26 +63,15 @@ def thread_search_view(request):
     except EmptyPage:
         object_list = search_paginator.page(search_paginator.num_pages)
 
-# proper pagination tutorial 34
-    # if page is None:
-    #     start_index = 0 # page min
-    #     end_index = 2 # page max
-    # else:
-    #     (start_index, end_index) = proper_pagination(object_list, index=1)
-
-
-    # page_range = list(search_paginator.page_range)[start_index:end_index]
-
-
     context = {
         'object_list': object_list,
-        # 'page_range' : page_range,
     }
 
     return render(request, "forum/thread_search.html", context)
 
 
-def thread_list_view(request, id):
+def thread_list_view(request, slug):
+    id = SubForum.objects.get(slug=slug).id
     try:
         queryset = Thread.objects.filter(sub_forum_id=id)
     except Thread.DoesNotExist:
@@ -98,7 +88,6 @@ def thread_list_view(request, id):
 
 
 def thread_detail_view(request, id):
-
     try:
         queryset = Thread.objects.filter(id=id)
         querypost = Post.objects.filter(thread_id=id)
@@ -116,7 +105,9 @@ def thread_detail_view(request, id):
             new_post.thread_id = Thread.objects.get(id=id)
             new_post = post_comment.save()
 
-            return HttpResponseRedirect('/forum/%d/details' % id)  # ok
+            return HttpResponseRedirect(
+                reverse('simpleforum:thread_detail_view', kwargs={"id": id})
+                )
     else:
         post_comment = PostCreateForm()
 
@@ -145,17 +136,15 @@ def thread_create_view(request, sub_forum_id):
             new_thread.user_id = current_user
             new_thread.sub_forum_id = SubForum.objects.get(id=sub_forum_id)
             new_thread = form.save()
+
+            slug = new_thread.sub_forum_id.slug  # ok
+            print("slug is :", slug)
+            # return HttpResponseRedirect('/forum/%s/thread' % slug)  # ok
+            return HttpResponseRedirect(reverse('simpleforum:thread_list_view',
+                                                kwargs={"slug": slug}))
+
         print(form)
         messages.success(request, "Thread created succesffully")
-        queryset = Thread.objects.filter(sub_forum_id=sub_forum_id)
-        context = {
-            "object_list": queryset,
-        }
-        # TODO return to show Thread list on the relational subform id
-        # return render(request, "forum/thread_list.html", context)
-        # return HttpResponseRedirect(reverse('simpleforum:thread_list_view'))
-        return HttpResponseRedirect('/forum/%d/thread' % sub_forum_id)  # ok
-        # return HttpResponse("Thread created") # display only response
     else:
         form = ThreadCreateForm()
 
@@ -166,25 +155,25 @@ def thread_create_view(request, sub_forum_id):
 
 
 def thread_edit_view(request, id):
-
     obj = get_object_or_404(Thread, id=id)
 
     # if logged in user is not the same as the user creating the Thread
     if obj.user_id != request.user:
         raise Http404()
 
-    # x = obj.sub_forum_id.id
-
-    # print("this is ", x)
     if request.method == 'POST':
         form = ThreadEditForm(request.POST or None, instance=obj)
         if form.is_valid():
             form.save()
 
             print(form)
-            messages.success(request, "{} has succesfully been updated".format(obj.title))
+            messages.success(
+                request, "{} has succesfully been updated".format(obj.title))
             # return HttpResponseRedirect(reverse('simpleforum:thread_detail_view') )
-            return HttpResponseRedirect('/forum/%d/details'%id) #ok
+            # return HttpResponseRedirect('/forum/%d/details' % id)  # ok
+            return HttpResponseRedirect(
+                reverse('simpleforum:thread_detail_view',
+                        kwargs={"id": id}))
     else:
         form = ThreadEditForm(instance=obj)
 
@@ -200,13 +189,15 @@ def thread_delete_view(request, id):
     if obj.user_id != request.user:
         raise Http404()
 
-    sub_forum_id = obj.sub_forum_id.id
-
+    # sub_forum_id = obj.sub_forum_id.id
+    sub_forum_slug = obj.sub_forum_id.slug
     obj.delete()
-    print("Thread id", id," + is deleted")
-    messages.warning(request, "{} has succesfully been deleted".format(obj.title))
-    return HttpResponseRedirect('/forum/%d/Thread'%sub_forum_id) #ok
-
+    print("Thread id", id, " + is deleted")
+    messages.warning(request,
+                     "{} has succesfully been deleted".format(obj.title))
+    return HttpResponseRedirect(
+                reverse('simpleforum:thread_list_view',
+                        kwargs={"slug": sub_forum_slug}))
 
 
 def post_reply_view(request, thread_id, parent_id):
@@ -228,19 +219,16 @@ def post_reply_view(request, thread_id, parent_id):
         print(new_reply)
         messages.success(request, "Reply created")
 
-        # queryset = Thread.objects.filter(sub_forum_id=sub_forum_id)
-        # context = {
-        #     "object_list" : queryset,
-        # }
-        return HttpResponseRedirect('/forum/%d/details'%new_reply.thread_id.id) #ok
+        return HttpResponseRedirect(
+                reverse('simpleforum:thread_detail_view',
+                        kwargs={"id": new_reply.thread_id.id}))
+
     else:
         form = PostCreateForm()
 
-
     queryset = Post.objects.filter(id=parent_id)
     context = {
-        'form':form,
-        'object_list':queryset
+        'form': form,
+        'object_list': queryset
     }
     return render(request, "forum/post_reply.html", context)
-    # return HttpResponse("Post reply")

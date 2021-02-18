@@ -3,7 +3,13 @@ description: Getting started with Docker Compose and Django
 keywords: documentation, docs,  docker, compose, orchestration, containers
 title: "Quickstart: Compose and Django"
 ---
+Uses mysql as a db
+Forum and subforum is created via admin 
+Thread can be created by user
 
+
+
+Details below are guide for setting up docker and django
 This quick-start guide demonstrates how to use Docker Compose to set up and run a simple Django/PostgreSQL app. Before starting,
 [install Compose](install.md).
 

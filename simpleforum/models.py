@@ -1,6 +1,7 @@
 from django.db import models
 from django.shortcuts import reverse
 from django.contrib.auth.models import User
+from django.utils.text import slugify
 # Create your models here.
 
 
@@ -25,9 +26,10 @@ class SubForum(models.Model):
     description = models.TextField(default="no description")
     forum_id = models.ForeignKey('simpleforum.forum', on_delete=models.CASCADE,
                                  null=True)
+    slug = models.SlugField(null=True)
 
     def get_absolute_url(self):
-        return reverse("simpleforum:thread_list_view", args=[str(self.id)])
+        return reverse("simpleforum:thread_list_view", args=[str(self.slug)])
 
 
 class ThreadManager(models.Manager):
@@ -86,5 +88,3 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return "Profile of user {}".format(self.user.username)
-
-

@@ -7,14 +7,12 @@
     <p class="alert alert-{{ message.tags }}"> {{ message }}</p>
     {% endfor %}
 {% endif %}
-<h1> Thread show all, belonging to Subforum id {{ get_sub_forum_id }}</h1>
-</h1>
-<small> {{ i.SubForum_id }}</small>
-
+<h1> Subforum id {{ get_sub_forum_id }}</h1>
+Thread ID | Thread title | Thread created at | Thread updated_at
 {% for i in object_list %}
 
 <p>{{ i.id }} | <a href="{% url 'simpleforum:thread_detail_view' id=i.id %}">{{ i.title }} </a> |
-    {{ i.created_at }} </p>
+    {{ i.created_at }} |{{ i.updated_at }} </p>
         {% empty %}
         <div class="container-fluid">
             <h3> No Thread Exists </h3>

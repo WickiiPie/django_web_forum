@@ -3,7 +3,6 @@
 {% block content %}
 {% include 'forum/thread_alert.html' %}
 
-
 {% if request.user.is_authenticated %}
 {% endif %}
 
@@ -20,11 +19,7 @@
     </a>
     {% endif %}</h1>
     <p>
-    All details of thread
-    {{ instance.user_id }} |
-    {{ instance.content }} |
-    {{ instance.created_at }} |
-    {{ instance.sub_forum_id }}
+        Created by {{ instance.user_id }} at {{ instance.updated_at }} Sub Forum : {{ instance.sub_forum_id.slug }}
     </p>
 {% endfor %}
 
@@ -32,50 +27,51 @@
 {% if post.count == 0 %}
 No post yet
 {% else %}
-{{ post.count }} Post/Comment {{ post|pluralize }}
+{{ post.count }} Post/Comment {{ post.count|pluralize }}
 
 <div class="main-comment-section" </div> <div class="container-fluid mt-2">
     {% for instance in post %}
     <div class="form-group row">
-        <p>
             {% if instance.parent_id == None %}
             <blockquote class="blockquote">
-                <p class="mb-0">Comment #{{ instance.id }} to thread #{{ instance.thread_id.id }} </p>
-                <p>{{ instance.content }} :{{ instance.user_id|capfirst }} </p>
-                <p>{{ instance.thread_id }} : {{ instance.created_at }} : {{ instance.parent_id }} </p>
+            <p>
+                <p class="mb-2">Comment #{{ instance.id }} to thread #{{ instance.thread_id.id }} </p>
+                <p>{{ instance.content }} </p>
+                <!-- <p>{{ instance.thread_id }} : {{ instance.created_at }} : {{ instance.parent_id }} </p> -->
                 <footer class="blockquote-footer"> <cite title="source title">{{ instance.user_id|capfirst }}</cite>
                         {% if request.user.is_authenticated %}
                         <a
                             href="{% url 'simpleforum:post_reply_view' thread_id=instance.thread_id.id parent_id=instance.id %}">
-                            {{ instance.id }}
                             <button type="button" value='Reply' class="btn btn-outline-success">Reply</button>
                         </a>
                         {% endif %}
                 </footer>
+            </p>
             </blockquote>
             {% endif %}
     </div>
-    <div class="replied-comments container mt-2">
+
+    {% for replies in instance.parent.all %}
+    <div class="replied-comments container mt-1">
         <div class="form-group row">
-            {% for replies in instance.parent.all %}
             <blockquote class="blockquote">
-                <p class="mb-0">Reply #{{ replies.id }} to #{{ replies.parent_id.id }} </p>
-                <p>{{ replies.content }} :{{ replies.user_id|capfirst }} </p>
-                <p>{{ replies.thread_id }} : {{ replies.created_at }} </p>
+                <small>
+                <p class="mb-2">Reply #{{ replies.id }} to #{{ replies.parent_id.id }} </p>
+                <p>{{ replies.content }} </p>
+                <!-- <p>{{ replies.thread_id }} : {{ replies.created_at }} </p> -->
                 <footer class="blockquote-footer"> <cite title="source title"> {{ replies.user_id|capfirst }}</cite>
                         {% if request.user.is_authenticated %}
                         <a
                             href="{% url 'simpleforum:post_reply_view' thread_id=instance.thread_id.id parent_id=replies.id %}">
-                            {{ replies.id }}
                             <button type="button" value='Reply' class="btn btn-outline-success">Reply</button>
                         </a>
                         {% endif %}
                 </footer>
+                </small>
             </blockquote>
-            {% endfor %}
         </div>
     </div>
-    </p>
+    {% endfor %}
     {% endfor %}
 </div>
 {% endif %}
