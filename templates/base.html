@@ -33,13 +33,16 @@
                     <a class="nav-link" href="{% url 'user_logout_view' %}">Logout</a>
                 </li>
                 <br>
+                <li class="nav-item">
+                <a class="nav-link" href="{% url 'edit_profile_view' %}">Edit Profile</a>
+                </li>
+                <br>
                 <p> Welcome {{ request.user.username }} </p>
                 {% else %}
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'user_login_view' %}">Login/Register</a>
                 </li>
                 {% endif %}
-
         </div>
     </nav>
 </body>
