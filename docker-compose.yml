@@ -10,7 +10,7 @@ services:
       - "3306:3306"
     restart: always
     environment:
-       MYSQL_DATABASE: 'crm'
+       MYSQL_DATABASE: 'simpleforum_db'
        MYSQL_USER: 'root'
        MYSQL_ROOT_PASSWORD: 'root'
     healthcheck:

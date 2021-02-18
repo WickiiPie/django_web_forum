@@ -10,17 +10,13 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
-# ANCHOR this is env file
+from pathlib import Path
 
 import os
 
 import environ
 env = environ.Env()
 environ.Env.read_env()  # reading .env file
-
-
-from pathlib import Path
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -29,12 +25,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '%%02#$=qmusc2@p$*yuedwhy9(e-fr%jh4%+tiafknj3tuo8+q'
+SECRET_KEY = 'k91y*4p2qx)qsbb5x__ob)gqr=tp5vrj6ori7ogwq!_1*x#a48'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -46,10 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'user_profile',
-    'forum',
-    'thread',
-
+    'simpleforum',
 ]
 
 MIDDLEWARE = [
@@ -67,7 +60,7 @@ ROOT_URLCONF = 'djangoforum.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR,"templates")], #to locate templates folder
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -85,29 +78,49 @@ WSGI_APPLICATION = 'djangoforum.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-
-        # needs .env file (newly created)
-        'NAME': env.str("NAME"),
-        'USER': env.str("USER"),
-        'PASSWORD': env.str("PASSWORD"),
-        'HOST': 'db',
-        'PORT': '3306',
-        'OPTIONS': {
-            'charset': 'utf8mb4',
-            'use_unicode': True,
-            'init_command': 'SET '
-            'character_set_connection=utf8,'
-            'collation_connection=utf8_bin'
-        },
-        'TEST_CHARSET': 'utf8',
-        'TEST_COLLATION': 'utf8_general_ci',
+if env.bool("CLOUD_SQL"):
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'HOST': 'db',
+            'PORT': '3306',
+            'NAME': env.str("NAME"),
+            'USER': env.str("USER"),
+            'PASSWORD': env.str("PASSWORD"),
+            'OPTIONS': {
+                'charset': 'utf8mb4',
+                'use_unicode': True,
+                'init_command': 'SET '
+                'character_set_connection=utf8,'
+                'collation_connection=utf8_bin'
+            },
+            'TEST_CHARSET': 'utf8',
+            'TEST_COLLATION': 'utf8_general_ci',
+        }
     }
-}
+# https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
+else:
+
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': env.str("NAME"),
+            'USER': env.str("USER"),
+            'PASSWORD': env.str("PASSWORD"),
+            'HOST': 'db',
+            'PORT': '3306',
+            'OPTIONS': {
+                'charset': 'utf8mb4',
+                'use_unicode': True,
+                'init_command': 'SET '
+                'character_set_connection=utf8,'
+                'collation_connection=utf8_bin'
+            },
+            'TEST_CHARSET': 'utf8',
+            'TEST_COLLATION': 'utf8_general_ci',
+        }
+    }
 
 
 # Password validation
@@ -134,7 +147,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Bangkok'
 
 USE_I18N = True
 
