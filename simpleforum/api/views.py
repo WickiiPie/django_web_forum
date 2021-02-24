@@ -1,7 +1,7 @@
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-
+from rest_framework.views import APIView
 from simpleforum.models import Thread
 from simpleforum.api.serializers import ThreadSerializer
 from django.shortcuts import get_object_or_404
@@ -46,3 +46,43 @@ def thread_detail_api_view(request, pk):
     elif request.method == "DELETE":
         thread.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+# class based api views
+
+class ThreadListCreateAPIView(APIView):
+    def get(self, request):
+        threads = Thread.objects.all()
+        serializer = ThreadSerializer(threads, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = ThreadSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class ThreadDetailAPIView(APIView):
+    def get_object(self, pk):
+        thread = get_object_or_404(Thread, pk=pk)
+        return thread
+
+    def get(self, request, pk):
+        thread = self.get_object(pk)
+        serializer = ThreadSerializer(thread)
+        return Response(serializer.data)
+
+    def put(self, request, pk):
+        thread = self.get_object(pk)
+        serializer = ThreadSerializer(thread, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):
+        thread = self.get_object(pk)
+        thread.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
