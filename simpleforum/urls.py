@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 
 from simpleforum.views import (
     # home_view,
@@ -27,4 +27,7 @@ urlpatterns = [
     path('node/<int:id>/edit/', thread_edit_view, name='thread_edit_view'),
     path('node/<int:id>/delete/', thread_delete_view, name='thread_delete_view'),
     path('node/<int:thread_id>/<int:parent_id>', post_reply_view, name='post_reply_view'),
+
+    # api
+    path("api/", include("simpleforum.api.urls"))
 ]
