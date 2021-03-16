@@ -7,3 +7,4 @@ django-environ
 django-cors-headers
 pyexcel_xls
 pyexcel_xlsx
+djangorestframework-simplejwt
